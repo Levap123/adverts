@@ -1,19 +1,20 @@
 package main
 
 import (
+	"github.com/Levap123/adverts/internal/app"
+	"github.com/Levap123/adverts/pkg/lg"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 func main() {
-	logrus.SetFormatter(logrus.StandardLogger().Formatter)
-	if err := initConfig(); err != nil {
+	if err := lg.InitConfigs(); err != nil {
 		logrus.Fatal(err)
 	}
-}
-
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("configs")
-	return viper.ReadInConfig()
+	app, err := app.NewApp()
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	if err := app.Run(); err != nil {
+		logrus.Fatal(err)
+	}
 }

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/Levap123/adverts/internal/repository/postgres"
 	"github.com/jackc/pgx/v5"
 )
@@ -16,5 +18,5 @@ func NewRepostory(db *pgx.Conn) *Repository {
 }
 
 type AuthRepo interface {
-	Create(email, password string) (int, error)
+	Create(ctx context.Context, email, password string) (int, error)
 }

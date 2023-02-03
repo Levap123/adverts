@@ -11,15 +11,16 @@ import (
 	"github.com/Levap123/adverts/internal/repository/postgres"
 	"github.com/Levap123/adverts/internal/service"
 	handler "github.com/Levap123/adverts/internal/transport"
+	"github.com/Levap123/adverts/pkg/json"
+	"github.com/Levap123/adverts/pkg/lg"
 	"github.com/spf13/viper"
 )
 
 type App struct {
-	handler *handler.Handler
-	service *service.Service
-	repos   *repository.Repository
-	server  *http.Server
+	server *http.Server
 }
+
+const MB = 1024 * 1024
 
 func NewApp() (*App, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -36,5 +37,35 @@ func NewApp() (*App, error) {
 	if err := db.Ping(ctx); err != nil {
 		return nil, fmt.Errorf("new app - ping db: %w", err)
 	}
-	return &App{}, nil
+	JSON := new(json.JSONSerializer)
+	lg, err := lg.NewLogger()
+	if err != nil {
+		return nil, fmt.Errorf("new app - ping db: %w", err)
+	}
+	repos := repository.NewRepostory(db)
+	service := service.NewService(repos)
+	handler := handler.NewHandler(service, JSON, lg)
+	routes := handler.InitRoutes()
+	server := InitServer(routes, configs.ServerConf{
+		Addr:      viper.GetString("server_addr"),
+		RWTimeout: viper.GetInt("rw_timeout"),
+		HeaderMBs: viper.GetInt("header_mbs"),
+	})
+	return &App{
+		server: server,
+	}, nil
+}
+
+func (a *App) Run() error {
+	return a.server.ListenAndServe()
+}
+
+func InitServer(routes http.Handler, confs configs.ServerConf) *http.Server {
+	return &http.Server{
+		ReadTimeout:    time.Second * time.Duration(confs.RWTimeout),
+		WriteTimeout:   time.Second * time.Duration(confs.RWTimeout),
+		MaxHeaderBytes: MB * confs.HeaderMBs,
+		Handler:        routes,
+		Addr:           confs.Addr,
+	}
 }

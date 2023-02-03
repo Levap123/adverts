@@ -13,8 +13,8 @@ FROM gcr.io/distroless/base-debian10
 WORKDIR /app
 
 COPY --from=build /app/main .
-COPY --from=build /app/up.sql . 
-COPY --from=build /app/.env . 
+COPY --from=build /app/migrations ./migrations 
+COPY --from=build /app/configs ./configs 
 
 EXPOSE 8080
 

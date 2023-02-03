@@ -6,3 +6,9 @@ type PostgresConf struct {
 	Password string
 	Host     string
 }
+
+type ServerConf struct {
+	Addr      string
+	RWTimeout int
+	HeaderMBs int
+}

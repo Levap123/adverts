@@ -1,9 +1,17 @@
 package service
 
-type Service struct{
+import "github.com/Levap123/adverts/internal/repository"
 
+type Service struct {
+	AuthService
 }
 
-type AuthRepo interface{
-	
+func NewService(repo repository.Repository) *Service {
+	return &Service{
+		AuthService: NewAuth(repo.AuthRepo),
+	}
+}
+
+type AuthService interface {
+	Create(email, password string) (int, error)
 }

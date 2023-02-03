@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/Levap123/adverts/configs"
-	"github.com/Levap123/adverts/internal/handler"
 	"github.com/Levap123/adverts/internal/repository"
 	"github.com/Levap123/adverts/internal/repository/postgres"
 	"github.com/Levap123/adverts/internal/service"
+	handler "github.com/Levap123/adverts/internal/transport"
 	"github.com/spf13/viper"
 )
 

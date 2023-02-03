@@ -1,0 +1,9 @@
+db_username: "pavel"
+db_name: "adverts"
+db_password: "root"
+port: 5432
+host: "db"
+server_address: ":8080"
+jwt_sign: "asdASD@!#awAS12354EQW"
+email: "test.adverts123@gmail.com"
+password: "pUzWd4rUd7k8F5e"

@@ -5,5 +5,6 @@ type Advert struct {
 	Title  string
 	Body   string
 	Price  int
+	Status string
 	UserID int
 }

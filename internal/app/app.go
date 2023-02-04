@@ -11,6 +11,7 @@ import (
 	"github.com/Levap123/adverts/internal/repository/postgres"
 	"github.com/Levap123/adverts/internal/service"
 	handler "github.com/Levap123/adverts/internal/transport"
+	"github.com/Levap123/adverts/internal/validator"
 	"github.com/Levap123/adverts/pkg/json"
 	"github.com/Levap123/adverts/pkg/lg"
 	"github.com/spf13/viper"
@@ -34,23 +35,30 @@ func NewApp() (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf("new app - open db: %w", err)
 	}
-	if err := db.Ping(ctx); err != nil {
-		return nil, fmt.Errorf("new app - ping db: %w", err)
-	}
+
 	JSON := new(json.JSONSerializer)
+
 	lg, err := lg.NewLogger()
 	if err != nil {
-		return nil, fmt.Errorf("new app - ping db: %w", err)
+		return nil, fmt.Errorf("new app - logger: %w", err)
 	}
+
+	validator := new(validator.Validator)
+
 	repos := repository.NewRepostory(db)
+
 	service := service.NewService(repos)
-	handler := handler.NewHandler(service, JSON, lg)
+
+	handler := handler.NewHandler(service, JSON, lg, validator)
+
 	routes := handler.InitRoutes()
+
 	server := InitServer(routes, configs.ServerConf{
 		Addr:      viper.GetString("server_addr"),
 		RWTimeout: viper.GetInt("rw_timeout"),
 		HeaderMBs: viper.GetInt("header_mbs"),
 	})
+
 	return &App{
 		server: server,
 	}, nil

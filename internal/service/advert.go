@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/Levap123/adverts/internal/entity"
 	"github.com/Levap123/adverts/internal/repository"
 )
 
@@ -25,4 +26,8 @@ func (a *Advert) Create(ctx context.Context, title, body string, price, userId i
 		}
 	}
 	return a.repo.Create(ctx, title, body, price, userId)
+}
+
+func (a *Advert) GetAll(ctx context.Context, userId int) ([]entity.Advert, error) {
+	return a.repo.GetAll(ctx, userId)
 }

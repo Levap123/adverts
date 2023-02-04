@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/Levap123/adverts/internal/entity"
 	"github.com/Levap123/adverts/internal/repository"
 )
 
@@ -25,4 +26,5 @@ type AuthService interface {
 
 type AdvertService interface {
 	Create(ctx context.Context, title, body string, price, userId int) (int, error)
+	GetAll(ctx context.Context, userId int) ([]entity.Advert, error)
 }

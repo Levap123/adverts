@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Levap123/adverts/internal/service"
+	"github.com/jackc/pgx/v5"
 )
 
 type AdvertRequest struct {
@@ -70,4 +71,23 @@ func (h *Handler) createAdvert(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) getAllAdverts(w http.ResponseWriter, r *http.Request) {
 	userId := r.Context().Value("userId")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	defer cancel()
+	adverts, err := h.service.AdvertService.GetAll(ctx, userId.(int))
+	if err != nil {
+		switch {
+		case errors.Is(err, pgx.ErrNoRows):
+			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"there no adverts from this user"}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		default:
+			if err := h.js.Send(w, http.StatusInternalServerError, ErrorResponse{err.Error()}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		}
+		return
+	}
+	if err := h.js.Send(w, http.StatusOK, adverts); err != nil {
+		h.lg.Errorln(err.Error())
+	}
 }

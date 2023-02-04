@@ -76,6 +76,10 @@ func (a *App) Run() error {
 	return a.server.ListenAndServe()
 }
 
+func (a *App) Shutdown(ctx context.Context) error {
+	return a.server.Shutdown(ctx)
+}
+
 func InitServer(routes http.Handler, confs configs.ServerConf) *http.Server {
 	return &http.Server{
 		ReadTimeout:    time.Second * time.Duration(confs.RWTimeout),

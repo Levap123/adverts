@@ -20,8 +20,8 @@ func NewAuth(repo repository.AuthRepo) *Auth {
 }
 
 const (
-	accessType  = "access"
-	refreshType = "refresh"
+	AccessType  = "access"
+	RefreshType = "refresh"
 )
 
 func (a *Auth) Create(ctx context.Context, email, password string) (int, error) {
@@ -44,11 +44,11 @@ func (a *Auth) GetTokens(ctx context.Context, email, password string) (string, s
 	if err := crypt.ComparePassword(password, user.Password); err != nil {
 		return "", "", fmt.Errorf("service - get user - %w", ErrInvalidPassword)
 	}
-	accessToken, err := jwt.GenerateJwt(user.ID, 1, accessType)
+	accessToken, err := jwt.GenerateJwt(user.ID, 1, AccessType)
 	if err != nil {
 		return "", "", fmt.Errorf("service - get user - %w", err)
 	}
-	refreshToken, err := jwt.GenerateJwt(user.ID, 24, refreshType)
+	refreshToken, err := jwt.GenerateJwt(user.ID, 24, RefreshType)
 	if err != nil {
 		return "", "", fmt.Errorf("service - get user - %w", err)
 	}

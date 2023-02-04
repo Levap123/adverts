@@ -33,8 +33,8 @@ func GenerateJwt(userID int, days int, tokenType string) (string, error) {
 	return tokenString, nil
 }
 
-func ParseToken(accessToken string) (int, string, error) {
-	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+func ParseToken(tokenString string) (int, string, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid sign method")
 		}

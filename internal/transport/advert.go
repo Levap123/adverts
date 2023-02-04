@@ -2,8 +2,11 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"time"
+
+	"github.com/Levap123/adverts/internal/service"
 )
 
 type AdvertRequest struct {
@@ -28,5 +31,23 @@ func (h *Handler) createAdvert(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	advertId, err := h.service.AdvertService.Create(ctx, input.Title, input.Body, input.Price)
+	userId := r.Context().Value("userId")
+	advertId, err := h.service.AdvertService.Create(ctx, input.Title, input.Body, input.Price, userId.(int))
+	if err != nil {
+		h.lg.Errorln(err)
+		switch {
+		case errors.Is(err, service.ErrInorrectTitle):
+			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{err.Error()}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		default:
+			if err := h.js.Send(w, http.StatusInternalServerError, ErrorResponse{err.Error()}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		}
+		return
+	}
+	if err := h.js.Send(w, http.StatusOK, map[string]int{"advertId": advertId}); err != nil {
+		h.lg.Errorln(err.Error())
+	}
 }

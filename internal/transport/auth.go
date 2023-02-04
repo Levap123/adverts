@@ -34,7 +34,7 @@ func (h *Handler) signUp(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	userID, err := h.service.Create(ctx, input.Email, input.Password)
+	userID, err := h.service.AuthService.Create(ctx, input.Email, input.Password)
 	if err != nil {
 		h.lg.Errorln(err.Error())
 		switch {
@@ -72,7 +72,7 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	accessToken, refreshToken, err := h.service.GetTokens(ctx, input.Email, input.Password)
+	accessToken, refreshToken, err := h.service.AuthService.GetTokens(ctx, input.Email, input.Password)
 	if err != nil {
 		h.lg.Errorln(err.Error())
 		switch {

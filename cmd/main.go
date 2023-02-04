@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/Levap123/adverts/internal/app"
 	"github.com/Levap123/adverts/pkg/lg"
@@ -27,7 +28,10 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
-	if err := app.Shutdown(context.Background()); err != nil {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	if err := app.Shutdown(ctx); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
 }

@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -12,17 +13,18 @@ var sign = []byte(viper.GetString("jwt_sign"))
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	userID    int
-	tokenType string
+	UserID    int    `json:"user_id,omitempty"`
+	TokenType string `json:"token_type,omitempty"`
 }
 
-func GenerateJwt(userID int, days int, tokenType string) (string, error) {
+func GenerateJwt(UserID int, days int, TokenType string) (string, error) {
+	fmt.Println(UserID, TokenType)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(24 * time.Hour * time.Duration(days)).Unix(),
 		},
-		userID,
-		tokenType,
+		UserID,
+		TokenType,
 	})
 
 	tokenString, err := token.SignedString(sign)
@@ -44,11 +46,12 @@ func ParseToken(tokenString string) (int, string, error) {
 		return 0, "", err
 	}
 	claims, ok := token.Claims.(*tokenClaims)
-	if claims.ExpiresAt < time.Now().Unix() {
-		return 0, "", ErrExpired
-	}
 	if !ok {
 		return 0, "", ErrInvalidClaims
 	}
-	return claims.userID, claims.tokenType, nil
+
+	if claims.ExpiresAt < time.Now().Unix() {
+		return 0, "", ErrExpired
+	}
+	return claims.UserID, claims.TokenType, nil
 }

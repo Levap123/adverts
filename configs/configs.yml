@@ -14,6 +14,8 @@ password: "pUzWd4rUd7k8F5e"
 
 password_min: 8
 password_max: 35
+
+
 advert_body_min: 30
 advert_body_max: 500
 advert_title_min: 8

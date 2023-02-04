@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS adverts (
 	title TEXT,
 	body TEXT,
 	user_id INTEGER,
+	price INTEGER,
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

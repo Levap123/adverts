@@ -20,7 +20,7 @@ func (h *Handler) signUp(w http.ResponseWriter, r *http.Request) {
 	var input userRequest
 	if err := h.js.Read(r, &input); err != nil {
 		h.lg.Errorln(err.Error())
-		if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{err.Error()}); err != nil {
+		if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"request body is invalid"}); err != nil {
 			h.lg.Errorln(err.Error())
 		}
 		return
@@ -64,7 +64,7 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 	var input userRequest
 	if err := h.js.Read(r, &input); err != nil {
 		h.lg.Errorln(err.Error())
-		if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{err.Error()}); err != nil {
+		if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"request body is invalid"}); err != nil {
 			h.lg.Errorln(err.Error())
 		}
 		return

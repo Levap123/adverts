@@ -67,3 +67,7 @@ func (h *Handler) createAdvert(w http.ResponseWriter, r *http.Request) {
 		h.lg.Errorln(err.Error())
 	}
 }
+
+func (h *Handler) getAllAdverts(w http.ResponseWriter, r *http.Request) {
+	userId := r.Context().Value("userId")
+}

@@ -17,6 +17,7 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Route("/adverts", func(adverts chi.Router) {
 		adverts.Use(h.userIdentity)
 		adverts.Post("/", h.createAdvert)
+		adverts.Get("/", h.getAllAdverts)
 	})
 	return r
 }

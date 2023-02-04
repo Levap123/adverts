@@ -27,4 +27,5 @@ type AuthRepo interface {
 
 type AdvertRepo interface {
 	Create(ctx context.Context, title, body string, price, userId int) (int, error)
+	GetAll(ctx, context.Context, userId int) ()
 }

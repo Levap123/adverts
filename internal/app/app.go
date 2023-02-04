@@ -43,7 +43,8 @@ func NewApp() (*App, error) {
 		return nil, fmt.Errorf("new app - logger: %w", err)
 	}
 
-	validator := new(validator.Validator)
+	validator := validator.NewValidator(viper.GetInt("password_min"), viper.GetInt("password_max"),
+		viper.GetInt("advert_min"), viper.GetInt("advert_max"), viper.GetInt("price_max"))
 
 	repos := repository.NewRepostory(db)
 

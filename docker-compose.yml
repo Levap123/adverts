@@ -3,18 +3,26 @@ services:
   db:
     image: postgres:14.3
     environment:
-      POSTGRES_DB: adverts
+      POSTGRES_DB: task
       POSTGRES_USER: pavel
       POSTGRES_PASSWORD: root
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
-    - ~/adverts/postgres_data
+    - /home/student/code/test/~/adverts/postgres_data
 
   server:
     build: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - 8080:8080
     environment:

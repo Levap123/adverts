@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -28,11 +29,19 @@ func (h *Handler) signUp(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
+
 	userID, err := h.service.Create(ctx, input.Email, input.Password)
 	if err != nil {
 		h.lg.Errorln(err.Error())
-		if err := h.js.Send(w, http.StatusInternalServerError, ErrorResponse{err.Error()}); err != nil {
-			h.lg.Errorln(err.Error())
+		switch {
+		case strings.Contains(err.Error(), "duplicate"):
+			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"email is already in use"}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		default:
+			if err := h.js.Send(w, http.StatusInternalServerError, ErrorResponse{err.Error()}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
 		}
 		return
 	}

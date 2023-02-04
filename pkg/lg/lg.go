@@ -18,7 +18,7 @@ func InitConfigs() error {
 }
 
 func NewLogger() (*logrus.Logger, error) {
-	out, err := os.OpenFile("logs.txt", os.O_WRONLY|os.O_CREATE, 0777)
+	out, err := os.OpenFile("logs.log", os.O_WRONLY|os.O_CREATE, 0777)
 	if err != nil {
 		return nil, err
 	}

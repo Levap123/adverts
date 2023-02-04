@@ -18,4 +18,5 @@ func NewService(repo *repository.Repository) *Service {
 
 type AuthService interface {
 	Create(ctx context.Context, email, password string) (int, error)
+	GetTokens(ctx context.Context, email, password string) (string, string, error)
 }

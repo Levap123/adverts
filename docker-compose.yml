@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:14.3
     environment:
-      POSTGRES_DB: task
+      POSTGRES_DB: adverts
       POSTGRES_USER: pavel
       POSTGRES_PASSWORD: root
     networks:

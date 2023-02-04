@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var sign = viper.GetString("jwt_sign")
+var sign = []byte(viper.GetString("jwt_sign"))
 
 type tokenClaims struct {
 	jwt.StandardClaims

@@ -4,7 +4,14 @@ CREATE TABLE IF NOT EXISTS users (
 	password TEXT NOT NULL
 );
 
--- ALTER TABLE users_workspaces ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+CREATE TABLE IF NOT EXISTS adverts (
+	id SERIAL PRIMARY KEY,
+	title TEXT,
+	body TEXT,
+	user_id INTEGER	
+)
+
+ALTER TABLE adverts ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 -- ALTER TABLE users_workspaces ADD FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
 -- ALTER TABLE boards ADD FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
 -- ALTER TABLE lists ADD FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;

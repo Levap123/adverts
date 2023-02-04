@@ -43,8 +43,15 @@ func NewApp() (*App, error) {
 		return nil, fmt.Errorf("new app - logger: %w", err)
 	}
 
-	validator := validator.NewValidator(viper.GetInt("password_min"), viper.GetInt("password_max"),
-		viper.GetInt("advert_min"), viper.GetInt("advert_max"), viper.GetInt("price_max"))
+	validator := validator.NewValidator(configs.ValidatorConf{
+		PasswordMin:    viper.GetInt("password_min"),
+		PasswordMax:    viper.GetInt("password_max"),
+		AdvertBodyMin:  viper.GetInt("advert_body_min"),
+		AdvertBodyMax:  viper.GetInt("advert_body_max"),
+		PriceMax:       viper.GetInt("price_max"),
+		AdvertTitleMax: viper.GetInt("advert_title_max"),
+		AdvertTitleMin: viper.GetInt("advert_title_min"),
+	})
 
 	repos := repository.NewRepostory(db)
 

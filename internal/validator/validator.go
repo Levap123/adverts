@@ -1,19 +1,23 @@
 package validator
 
+import "github.com/Levap123/adverts/configs"
+
 type Validator struct {
-	passwordMin int
-	passwordMax int
-	advertMin   int
-	advertMax   int
-	priceMax    int
+	passwordMin    int
+	passwordMax    int
+	advertBodyMin  int
+	advertBodyMax  int
+	advertTitleMin int
+	advertTitleMax int
+	priceMax       int
 }
 
-func NewValidator(passwordMin, passwordMax, advertMin, advertMax, priceMax int) *Validator {
+func NewValidator(confs configs.ValidatorConf) *Validator {
 	return &Validator{
-		passwordMin: passwordMin,
-		passwordMax: passwordMax,
-		advertMin:   advertMin,
-		advertMax:   advertMax,
-		priceMax:    priceMax,
+		passwordMin:   confs.PasswordMin,
+		passwordMax:   confs.PasswordMax,
+		advertBodyMin: confs.AdvertBodyMin,
+		advertBodyMax: confs.AdvertBodyMax,
+		priceMax:      confs.PriceMax,
 	}
 }

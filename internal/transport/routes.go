@@ -13,5 +13,9 @@ func (h *Handler) InitRoutes() http.Handler {
 		auth.Post("/sign-up", h.signUp)
 		auth.Post("/sign-in", h.signIn)
 	})
+
+	r.Route("/adverts", func(adverts chi.Router) {
+		adverts.Post("", h.createAdvert)
+	})
 	return r
 }

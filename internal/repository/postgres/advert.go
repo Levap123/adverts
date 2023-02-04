@@ -33,11 +33,11 @@ func (a *Advert) Create(ctx context.Context, title, body string, price, userId i
 func (a *Advert) GetAll(ctx context.Context, userId int) ([]entity.Advert, error) {
 	var adverts []entity.Advert
 	tx, err := a.db.Begin(ctx)
-	defer tx.Rollback(ctx)
-
 	if err != nil {
 		return nil, fmt.Errorf("repo - get all adverts - %w", err)
 	}
+	defer tx.Rollback(ctx)
+
 	query := fmt.Sprintf("SELECT * FROM %s WHERE user_id = $1", advertTable)
 	rows, err := tx.Query(ctx, query, userId)
 	defer rows.Close()
@@ -53,4 +53,14 @@ func (a *Advert) GetAll(ctx context.Context, userId int) ([]entity.Advert, error
 		adverts = append(adverts, buffer)
 	}
 	return adverts, tx.Commit(ctx)
+}
+
+func (a *Advert) Get(ctx context.Context, advertId int) (entity.Advert, error) {
+	var advert entity.Advert
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", advertTable)
+	row := a.db.QueryRow(ctx, query, advertId)
+	if err := row.Scan(&advert.ID, &advert.Title, &advert.Body, &advert.Price, &advert.UserID); err != nil {
+		return entity.Advert{}, fmt.Errorf("repo - get one advert - %w", err)
+	}
+	return advert, nil
 }

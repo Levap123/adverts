@@ -27,4 +27,5 @@ type AuthService interface {
 type AdvertService interface {
 	Create(ctx context.Context, title, body string, price, userId int) (int, error)
 	GetAll(ctx context.Context, userId int) ([]entity.Advert, error)
+	Get(ctx context.Context, advertId int) (entity.Advert, error)
 }

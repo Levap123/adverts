@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/Levap123/adverts/internal/service"
+	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -75,6 +77,7 @@ func (h *Handler) getAllAdverts(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	adverts, err := h.service.AdvertService.GetAll(ctx, userId.(int))
 	if err != nil {
+		h.lg.Errorln(err)
 		switch {
 		case errors.Is(err, pgx.ErrNoRows):
 			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"there no adverts from this user"}); err != nil {
@@ -88,6 +91,38 @@ func (h *Handler) getAllAdverts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := h.js.Send(w, http.StatusOK, adverts); err != nil {
+		h.lg.Errorln(err.Error())
+	}
+}
+
+func (h *Handler) getAdvertById(w http.ResponseWriter, r *http.Request) {
+	advertId, err := strconv.Atoi(chi.URLParam(r, "advertId"))
+	if err != nil {
+		if err := h.js.Send(w, http.StatusNotFound, ErrorResponse{"not found"}); err != nil {
+			h.lg.Errorln(err.Error())
+		}
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	advert, err := h.service.AdvertService.Get(ctx, advertId)
+	if err != nil {
+		h.lg.Errorln(err)
+		switch {
+		case errors.Is(err, pgx.ErrNoRows):
+			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"advert with this id does not exist"}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		default:
+			if err := h.js.Send(w, http.StatusInternalServerError, ErrorResponse{err.Error()}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		}
+		return
+	}
+	if err := h.js.Send(w, http.StatusOK, advert); err != nil {
 		h.lg.Errorln(err.Error())
 	}
 }

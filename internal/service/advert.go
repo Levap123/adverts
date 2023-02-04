@@ -31,3 +31,7 @@ func (a *Advert) Create(ctx context.Context, title, body string, price, userId i
 func (a *Advert) GetAll(ctx context.Context, userId int) ([]entity.Advert, error) {
 	return a.repo.GetAll(ctx, userId)
 }
+
+func (a *Advert) Get(ctx context.Context, advertId int) (entity.Advert, error) {
+	return a.repo.Get(ctx, advertId)
+}

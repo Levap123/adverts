@@ -18,6 +18,6 @@ password_max: 35
 
 advert_body_min: 30
 advert_body_max: 500
-advert_title_min: 8
+advert_title_min: 5
 advert_title_max: 27
 price_max: 1000000

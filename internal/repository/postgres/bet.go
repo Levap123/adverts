@@ -83,14 +83,15 @@ func (b *Bet) GetAdvertPrice(ctx context.Context, userId, advertId int) (int, er
 func (b *Bet) IsActive(ctx context.Context, userId, advertId int) (bool, error) {
 	tx, err := b.DB.Begin(ctx)
 	if err != nil {
-		return false, fmt.Errorf("repo - get price bet - %w", err)
+		return false, fmt.Errorf("repo - get status bet - %w", err)
 	}
 	defer tx.Rollback(ctx)
 	var status string
-	query := fmt.Sprintf("SELECT price FROM %s WHERE user_id = $1 and id = $2", advertTable)
+	query := fmt.Sprintf("SELECT status FROM %s WHERE user_id = $1 and id = $2", advertTable)
 	row := tx.QueryRow(ctx, query, userId, advertId)
 	if err := row.Scan(&status); err != nil {
-		return false, fmt.Errorf("repo - get price bet - %w", err)
+		return false, fmt.Errorf("repo - get status bet - %w", err)
 	}
+	fmt.Println(status)
 	return status == activeStatus, tx.Commit(ctx)
 }

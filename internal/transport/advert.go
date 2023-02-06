@@ -80,7 +80,7 @@ func (h *Handler) getAllAdverts(w http.ResponseWriter, r *http.Request) {
 		h.lg.Errorln(err)
 		switch {
 		case errors.Is(err, pgx.ErrNoRows):
-			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"there no adverts from this user"}); err != nil {
+			if err := h.js.Send(w, http.StatusNotFound, ErrorResponse{"there no adverts from this user"}); err != nil {
 				h.lg.Errorln(err.Error())
 			}
 		default:
@@ -112,7 +112,7 @@ func (h *Handler) getAdvertById(w http.ResponseWriter, r *http.Request) {
 		h.lg.Errorln(err)
 		switch {
 		case errors.Is(err, pgx.ErrNoRows):
-			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"advert with this id does not exist"}); err != nil {
+			if err := h.js.Send(w, http.StatusNotFound, ErrorResponse{"advert with this id does not exist"}); err != nil {
 				h.lg.Errorln(err.Error())
 			}
 		default:

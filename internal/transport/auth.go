@@ -81,7 +81,7 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 				h.lg.Errorln(err.Error())
 			}
 		case errors.Is(err, pgx.ErrNoRows):
-			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"user with this email does not exist"}); err != nil {
+			if err := h.js.Send(w, http.StatusNotFound, ErrorResponse{"user with this email does not exist"}); err != nil {
 				h.lg.Errorln(err.Error())
 			}
 		default:

@@ -9,6 +9,7 @@ import (
 
 	"github.com/Levap123/adverts/internal/service"
 	"github.com/go-chi/chi/v5"
+	"github.com/jackc/pgx/v5"
 )
 
 type BetRequest struct {
@@ -44,6 +45,10 @@ func (h *Handler) MakeBet(w http.ResponseWriter, r *http.Request) {
 			}
 		case errors.Is(err, service.ErrAdvertIsNotActive):
 			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{service.ErrAdvertIsNotActive.Error()}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
+		case errors.Is(err, pgx.ErrNoRows):
+			if err := h.js.Send(w, http.StatusNotFound, ErrorResponse{"advert not found"}); err != nil {
 				h.lg.Errorln(err.Error())
 			}
 		default:

@@ -10,12 +10,14 @@ import (
 type Service struct {
 	AuthService
 	AdvertService
+	BetService
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		AuthService:   NewAuth(repo.AuthRepo),
 		AdvertService: NewAdvert(repo.AdvertRepo),
+		BetService:    NewBet(repo.BetRepo),
 	}
 }
 
@@ -31,5 +33,5 @@ type AdvertService interface {
 }
 
 type BetService interface {
-	MakeBet(ctx, userId, betId, betPrice int) (int, error)
+	MakeBet(ctx context.Context, userId, advertId, betPrice int) (int, error)
 }

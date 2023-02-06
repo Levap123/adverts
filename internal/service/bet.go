@@ -1,9 +1,14 @@
 package service
 
 import (
+	"context"
+	"errors"
+	"fmt"
+
 	"github.com/Levap123/adverts/configs"
 	"github.com/Levap123/adverts/internal/mail"
 	"github.com/Levap123/adverts/internal/repository"
+	"github.com/jackc/pgx/v5"
 	"github.com/spf13/viper"
 )
 
@@ -23,6 +28,28 @@ func NewBet(repo repository.BetRepo) *Bet {
 		repo:       repo,
 		mailSender: maiSender,
 	}
+}
+
+func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int, error) {
+	price, err := b.repo.GetPrice(ctx, userId, advertId)
+	if err != nil {
+		if !errors.Is(err, pgx.ErrNoRows) {
+			return 0, fmt.Errorf("service - make bet - %w", err)
+		}
+		betId, err := b.repo.Create(ctx, userId, advertId, betPrice)
+		if err != nil {
+			return 0, fmt.Errorf("service - make bet - %w", err)
+		}
+		return betId, nil
+	}
+	if price > betPrice {
+		return 0, ErrPriceSmall
+	}
+	betId, err := b.repo.Update(ctx, userId, advertId, betPrice)
+	if err != nil {
+		return 0, fmt.Errorf("service - make bet - %w", err)
+	}
+	return betId, nil
 }
 
 /*

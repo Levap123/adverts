@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"sync"
+
 	"github.com/Levap123/adverts/internal/service"
 	"github.com/Levap123/adverts/internal/validator"
 	"github.com/Levap123/adverts/pkg/json"
@@ -12,6 +14,7 @@ type Handler struct {
 	js      *json.JSONSerializer
 	lg      *logrus.Logger
 	v       *validator.Validator
+	mu      *sync.Mutex
 }
 
 func NewHandler(service *service.Service, js *json.JSONSerializer, lg *logrus.Logger, v *validator.Validator) *Handler {
@@ -20,6 +23,7 @@ func NewHandler(service *service.Service, js *json.JSONSerializer, lg *logrus.Lo
 		js:      js,
 		lg:      lg,
 		v:       v,
+		mu:      &sync.Mutex{},
 	}
 }
 

@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS bets (
 	id SERIAL PRIMARY KEY,
 	advert_id INTEGER,
 	user_id INTEGER,
+	bet_price INTEGER,
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 	FOREIGN KEY (advert_id) REFERENCES adverts(id) ON DELETE CASCADE
 );

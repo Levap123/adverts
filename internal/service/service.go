@@ -29,3 +29,7 @@ type AdvertService interface {
 	GetAll(ctx context.Context, userId int) ([]entity.Advert, error)
 	Get(ctx context.Context, advertId int) (entity.Advert, error)
 }
+
+type BetService interface {
+	MakeBet(ctx, userId, betId, betPrice int) (int, error)
+}

@@ -13,12 +13,18 @@ func (h *Handler) InitRoutes() http.Handler {
 		auth.Post("/sign-up", h.signUp)
 		auth.Post("/sign-in", h.signIn)
 	})
+
 	r.Route("/api", func(api chi.Router) {
 		api.Use(h.userIdentity)
+
 		api.Route("/adverts", func(adverts chi.Router) {
 			adverts.Get("/{advertId}", h.getAdvertById)
 			adverts.Post("/", h.createAdvert)
 			adverts.Get("/", h.getAllAdverts)
+
+			adverts.Route("/{advertId}/bets", func(bets chi.Router) {
+				bets.Post("/", h.MakeBet)
+			})
 		})
 	})
 

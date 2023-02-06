@@ -44,11 +44,10 @@ func (a *Advert) GetAll(ctx context.Context, userId int) ([]entity.Advert, error
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE user_id = $1", advertTable)
 	rows, err := tx.Query(ctx, query, userId)
-	defer rows.Close()
-
 	if err != nil {
 		return nil, fmt.Errorf("repo - get all adverts - %w", err)
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var buffer entity.Advert
 		if err := rows.Scan(&buffer.ID, &buffer.Title, &buffer.Body, &buffer.Price, &buffer.Status, &buffer.UserID); err != nil {

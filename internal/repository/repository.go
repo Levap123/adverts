@@ -37,4 +37,5 @@ type BetRepo interface {
 	Create(ctx context.Context, userId, advertId, betPrice int) (int, error)
 	Update(ctx context.Context, userId, advertId, betPrice int) (int, error)
 	GetPrice(ctx context.Context, userId, advertId int) (int, error)
+	GetAdvertPrice(ctx context.Context, userId, advertId int) (int, error)
 }

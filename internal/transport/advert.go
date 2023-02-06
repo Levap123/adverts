@@ -66,7 +66,7 @@ func (h *Handler) createAdvert(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	if err := h.js.Send(w, http.StatusOK, map[string]int{"advertId": advertId}); err != nil {
+	if err := h.js.Send(w, http.StatusOK, map[string]int{"advert_id": advertId}); err != nil {
 		h.lg.Errorln(err.Error())
 	}
 }

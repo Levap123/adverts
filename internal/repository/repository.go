@@ -38,4 +38,5 @@ type BetRepo interface {
 	Update(ctx context.Context, userId, advertId, betPrice int) (int, error)
 	GetPrice(ctx context.Context, userId, advertId int) (int, error)
 	GetAdvertPrice(ctx context.Context, userId, advertId int) (int, error)
+	IsActive(ctx context.Context, userId, advertId int) (bool, error)
 }

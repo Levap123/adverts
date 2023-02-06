@@ -10,6 +10,7 @@ import (
 	"github.com/Levap123/adverts/internal/app"
 	"github.com/Levap123/adverts/pkg/lg"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 func main() {
@@ -21,6 +22,7 @@ func main() {
 		logrus.Fatal(err)
 	}
 	go func() {
+		logrus.Infof("server is listening on http://0.0.0.0%s\n", viper.GetString("server_addr"))
 		if err := app.Run(); err != nil {
 			logrus.Fatal(err)
 		}

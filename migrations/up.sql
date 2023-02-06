@@ -14,6 +14,14 @@ CREATE TABLE IF NOT EXISTS adverts (
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS bets (
+	id SERIAL PRIMARY KEY,
+	advert_id INTEGER,
+	user_id INTEGER,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+	FOREIGN KEY (advert_id) REFERENCES adverts(id) ON DELETE CASCADE
+);
+
 -- ALTER TABLE users_workspaces ADD FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
 -- ALTER TABLE boards ADD FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
 -- ALTER TABLE lists ADD FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;

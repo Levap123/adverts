@@ -22,3 +22,10 @@ type ValidatorConf struct {
 	AdvertTitleMax int
 	AdvertTitleMin int
 }
+
+type EmailConf struct {
+	Email    string
+	Password string
+	Smtp     string
+	SmtpPort string
+}

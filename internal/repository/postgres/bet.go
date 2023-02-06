@@ -42,7 +42,6 @@ func (b *Bet) Update(ctx context.Context, userId, advertId, betPrice int) (int, 
 	defer tx.Rollback(ctx)
 	var betId int
 	query := fmt.Sprintf("UPDATE %s SET bet_price = $1, user_id = $2 WHERE advert_id = $3 RETURNING id", betTable)
-	fmt.Println(advertId)
 	row := tx.QueryRow(ctx, query, betPrice, userId, advertId)
 	if err := row.Scan(&betId); err != nil {
 		return 0, fmt.Errorf("repo - update bet - %w", err)
@@ -92,6 +91,5 @@ func (b *Bet) IsActive(ctx context.Context, userId, advertId int) (bool, error) 
 	if err := row.Scan(&status); err != nil {
 		return false, fmt.Errorf("repo - get status bet - %w", err)
 	}
-	fmt.Println(status)
 	return status == activeStatus, tx.Commit(ctx)
 }

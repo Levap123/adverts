@@ -1,9 +1,6 @@
 package validator
 
-import "fmt"
-
 func (v *Validator) IsTitleValid(title string) bool {
-	fmt.Println(v)
 	return len(title) >= v.advertTitleMin && len(title) <= v.advertTitleMax
 }
 

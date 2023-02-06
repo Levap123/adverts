@@ -24,6 +24,12 @@ func (h *Handler) MakeBet(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	if !h.v.IsBetOk(input.Bet) {
+		if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"bet can`t be a negative number"}); err != nil {
+			h.lg.Errorln(err.Error())
+		}
+		return
+	}
 	userId := r.Context().Value("userId")
 	advertId, err := strconv.Atoi(chi.URLParam(r, "advertId"))
 	if err != nil {

@@ -1,8 +1,6 @@
 package validator
 
 import (
-	"fmt"
-
 	"github.com/Levap123/adverts/configs"
 )
 
@@ -17,7 +15,6 @@ type Validator struct {
 }
 
 func NewValidator(confs configs.ValidatorConf) *Validator {
-	fmt.Println(confs)
 	return &Validator{
 		passwordMin:    confs.PasswordMin,
 		passwordMax:    confs.PasswordMax,

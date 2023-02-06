@@ -30,3 +30,8 @@ services:
     user: root
     links: 
       - db
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379

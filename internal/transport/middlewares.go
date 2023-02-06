@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -27,7 +26,6 @@ func (h *Handler) userIdentity(next http.Handler) http.Handler {
 			}
 			return
 		}
-		fmt.Println(tokenType, id)
 		if tokenType != service.AccessType {
 			if err := h.js.Send(w, http.StatusUnauthorized, ErrorResponse{"token type is invalid"}); err != nil {
 				h.lg.Errorln(err.Error())

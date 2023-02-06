@@ -38,7 +38,7 @@ func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int,
 	if !ok {
 		return 0, fmt.Errorf("service - make bet - %w", ErrAdvertIsNotActive)
 	}
-	price, err := b.repo.GetPrice(ctx, userId, advertId)
+	priceCurrent, err := b.repo.GetPrice(ctx, userId, advertId)
 	if err != nil {
 		if !errors.Is(err, pgx.ErrNoRows) {
 			return 0, fmt.Errorf("service - make bet - %w", err)
@@ -49,14 +49,14 @@ func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int,
 		}
 		return betId, nil
 	}
-	if price > betPrice {
+	if betPrice <= priceCurrent {
 		return 0, fmt.Errorf("service - make bet - %w", ErrPriceSmall)
 	}
 	advertPrice, err := b.repo.GetAdvertPrice(ctx, userId, advertId)
 	if err != nil {
 		return 0, fmt.Errorf("service - make bet - %w", err)
 	}
-	if advertPrice > betPrice {
+	if betPrice < advertPrice {
 		return 0, fmt.Errorf("service - make bet - %w", ErrPriceSmall)
 	}
 	betId, err := b.repo.Update(ctx, userId, advertId, betPrice)

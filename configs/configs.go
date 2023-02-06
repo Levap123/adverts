@@ -29,3 +29,9 @@ type EmailConf struct {
 	Smtp     string
 	SmtpPort string
 }
+
+type RedisConf struct {
+	Host     string
+	Password string
+	DB       int
+}// TODO

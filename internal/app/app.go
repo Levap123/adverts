@@ -19,6 +19,7 @@ import (
 
 type App struct {
 	server *http.Server
+	H      *handler.Handler
 }
 
 const MB = 1024 * 1024
@@ -69,6 +70,7 @@ func NewApp() (*App, error) {
 
 	return &App{
 		server: server,
+		H:      handler,
 	}, nil
 }
 

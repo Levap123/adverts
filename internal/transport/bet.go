@@ -42,6 +42,10 @@ func (h *Handler) MakeBet(w http.ResponseWriter, r *http.Request) {
 			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{"your bet is too small"}); err != nil {
 				h.lg.Errorln(err.Error())
 			}
+		case errors.Is(err, service.ErrAdvertIsNotActive):
+			if err := h.js.Send(w, http.StatusBadRequest, ErrorResponse{service.ErrAdvertIsNotActive.Error()}); err != nil {
+				h.lg.Errorln(err.Error())
+			}
 		default:
 			if err := h.js.Send(w, http.StatusInternalServerError, ErrorResponse{err.Error()}); err != nil {
 				h.lg.Errorln(err.Error())

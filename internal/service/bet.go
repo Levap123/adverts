@@ -31,6 +31,13 @@ func NewBet(repo repository.BetRepo) *Bet {
 }
 
 func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int, error) {
+	ok, err := b.repo.IsActive(ctx, userId, advertId)
+	if err != nil {
+		return 0, fmt.Errorf("service - make bet - %w", err)
+	}
+	if !ok {
+		return 0, fmt.Errorf("service - make bet - %w", ErrAdvertIsNotActive)
+	}
 	price, err := b.repo.GetPrice(ctx, userId, advertId)
 	if err != nil {
 		if !errors.Is(err, pgx.ErrNoRows) {

@@ -7,14 +7,14 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Levap123/adverts/configs"
 	"github.com/Levap123/adverts/internal/app"
-	"github.com/Levap123/adverts/pkg/lg"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func main() {
-	if err := lg.InitConfigs(); err != nil {
+	if err := configs.InitConfigs(); err != nil {
 		logrus.Fatal(err)
 	}
 	app, err := app.NewApp()

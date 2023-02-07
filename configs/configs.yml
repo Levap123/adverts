@@ -1,7 +1,7 @@
 db_username: "pavel"
 db_name: "adverts"
 db_password: "root"
-db_host: "localhost:5432"
+db_host: "db:5432"
 
 server_addr: ":8080"
 rw_timeout: 10
@@ -22,3 +22,7 @@ advert_body_max: 500
 advert_title_min: 5
 advert_title_max: 27
 price_max: 1000000
+
+redis_host : 6379
+redis_password : ""
+redis_db : 0

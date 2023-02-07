@@ -9,6 +9,7 @@ import (
 	"github.com/Levap123/adverts/configs"
 	"github.com/Levap123/adverts/internal/repository"
 	"github.com/Levap123/adverts/internal/repository/postgres"
+	goredis "github.com/Levap123/adverts/internal/repository/redis"
 	"github.com/Levap123/adverts/internal/service"
 	handler "github.com/Levap123/adverts/internal/transport"
 	"github.com/Levap123/adverts/internal/validator"
@@ -54,7 +55,13 @@ func NewApp() (*App, error) {
 		AdvertTitleMin: viper.GetInt("advert_title_min"),
 	})
 
-	repos := repository.NewRepostory(db)
+	redis := goredis.InitRedis(configs.RedisConf{
+		Host:     viper.GetString("redis_host"),
+		Password: viper.GetString("redis_password"),
+		DB:       viper.GetInt("redis_db"),
+	})
+
+	repos := repository.NewRepostory(db, redis)
 
 	service := service.NewService(repos)
 

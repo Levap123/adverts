@@ -1,37 +1,10 @@
 package configs
 
-type PostgresConf struct {
-	DBName   string
-	Username string
-	Password string
-	Host     string
+import "github.com/spf13/viper"
+
+func InitConfigs() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("configs")
+	return viper.ReadInConfig()
 }
 
-type ServerConf struct {
-	Addr      string
-	RWTimeout int
-	HeaderMBs int
-}
-
-type ValidatorConf struct {
-	PasswordMin    int
-	PasswordMax    int
-	AdvertBodyMin  int
-	AdvertBodyMax  int
-	PriceMax       int
-	AdvertTitleMax int
-	AdvertTitleMin int
-}
-
-type EmailConf struct {
-	Email    string
-	Password string
-	Smtp     string
-	SmtpPort string
-}
-
-type RedisConf struct {
-	Host     string
-	Password string
-	DB       int
-}// TODO

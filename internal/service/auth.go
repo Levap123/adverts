@@ -38,19 +38,24 @@ func (a *Auth) Create(ctx context.Context, email, password string) (int, error) 
 
 func (a *Auth) GetTokens(ctx context.Context, email, password string) (string, string, error) {
 	user, err := a.repo.Get(ctx, email)
+
 	if err != nil {
 		return "", "", fmt.Errorf("service - get user - %w", err)
 	}
+
 	if err := crypt.ComparePassword(password, user.Password); err != nil {
 		return "", "", fmt.Errorf("service - get user - %w", ErrInvalidPassword)
 	}
+
 	accessToken, err := jwt.GenerateJwt(user.ID, 1, AccessType)
 	if err != nil {
 		return "", "", fmt.Errorf("service - get user - %w", err)
 	}
+
 	refreshToken, err := jwt.GenerateJwt(user.ID, 24, RefreshType)
 	if err != nil {
 		return "", "", fmt.Errorf("service - get user - %w", err)
 	}
+	
 	return accessToken, refreshToken, nil
 }

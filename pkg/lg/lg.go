@@ -4,17 +4,10 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 func init() {
 	logrus.SetFormatter(logrus.StandardLogger().Formatter)
-}
-
-func InitConfigs() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("configs")
-	return viper.ReadInConfig()
 }
 
 func NewLogger() (*logrus.Logger, error) {

@@ -35,3 +35,7 @@ type AdvertService interface {
 type BetService interface {
 	MakeBet(ctx context.Context, userId, advertId, betPrice int) (int, error)
 }
+
+type BetTimeoutRepo interface {
+	ListenConsumer(ch chan int, errCh chan error)
+}

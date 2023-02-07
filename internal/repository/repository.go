@@ -5,20 +5,24 @@ import (
 
 	"github.com/Levap123/adverts/internal/entity"
 	"github.com/Levap123/adverts/internal/repository/postgres"
+	goredis "github.com/Levap123/adverts/internal/repository/redis"
 	"github.com/jackc/pgx/v5"
+	"github.com/redis/go-redis/v9"
 )
 
 type Repository struct {
 	AuthRepo
 	AdvertRepo
 	BetRepo
+	BetTimeoutRepo
 }
 
-func NewRepostory(db *pgx.Conn) *Repository {
+func NewRepostory(db *pgx.Conn, cl *redis.Client) *Repository {
 	return &Repository{
-		AuthRepo:   postgres.NewAuth(db),
-		AdvertRepo: postgres.NewAdvert(db),
-		BetRepo:    postgres.NewBet(db),
+		AuthRepo:       postgres.NewAuth(db),
+		AdvertRepo:     postgres.NewAdvert(db),
+		BetRepo:        postgres.NewBet(db),
+		BetTimeoutRepo: goredis.NewBetTimeout(cl),
 	}
 }
 
@@ -39,4 +43,8 @@ type BetRepo interface {
 	GetPrice(ctx context.Context, userId, advertId int) (int, error)
 	GetAdvertPrice(ctx context.Context, userId, advertId int) (int, error)
 	IsActive(ctx context.Context, userId, advertId int) (bool, error)
+}
+
+type BetTimeoutRepo interface {
+	ListenProducer(ch chan int, errCh chan error)
 }

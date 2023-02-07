@@ -14,10 +14,11 @@ import (
 
 type Bet struct {
 	repo       repository.BetRepo
+	repoAdvert repository.AdvertRepo
 	mailSender *mail.MailSender
 }
 
-func NewBet(repo repository.BetRepo) *Bet {
+func NewBet(repo repository.BetRepo, repoAdvert repository.AdvertRepo) *Bet {
 	maiSender := mail.NewMailSender(configs.EmailConf{
 		Email:    viper.GetString("email"),
 		Password: viper.GetString("password"),
@@ -26,6 +27,7 @@ func NewBet(repo repository.BetRepo) *Bet {
 	})
 	return &Bet{
 		repo:       repo,
+		repoAdvert: repoAdvert,
 		mailSender: maiSender,
 	}
 }
@@ -69,7 +71,9 @@ func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int,
 	if err != nil {
 		return 0, fmt.Errorf("service - make bet - %w", err)
 	}
+
 	
+
 	return betId, nil
 }
 

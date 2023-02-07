@@ -17,7 +17,7 @@ func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		AuthService:   NewAuth(repo.AuthRepo),
 		AdvertService: NewAdvert(repo.AdvertRepo),
-		BetService:    NewBet(repo.BetRepo),
+		BetService:    NewBet(repo.BetRepo, repo.AdvertRepo),
 	}
 }
 

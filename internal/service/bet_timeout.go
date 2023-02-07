@@ -35,6 +35,8 @@ func (bt *BetTimeout) ListenConsumer(ch chan int, errCh chan error) error {
 				2. DELETE BET
 				*/
 			}
+		default:
+			time.Sleep(time.Second * 15)
 		}
 	}
 }

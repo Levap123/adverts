@@ -49,45 +49,47 @@ func (b *Bet) Update(ctx context.Context, userId, advertId, betPrice int) (int, 
 	return betId, tx.Commit(ctx)
 }
 
-func (b *Bet) GetPrice(ctx context.Context, userId, advertId int) (int, error) {
+func (b *Bet) GetPrice(ctx context.Context, advertId int) (int, error) {
 	tx, err := b.DB.Begin(ctx)
 	if err != nil {
 		return 0, fmt.Errorf("repo - get price bet - %w", err)
 	}
 	defer tx.Rollback(ctx)
+
 	var price int
-	query := fmt.Sprintf("SELECT bet_price FROM %s WHERE user_id = $1 and advert_id = $2", betTable)
-	row := tx.QueryRow(ctx, query, userId, advertId)
+	query := fmt.Sprintf("SELECT bet_price FROM %s WHERE advert_id = $1", betTable)
+
+	row := tx.QueryRow(ctx, query, advertId)
 	if err := row.Scan(&price); err != nil {
 		return 0, fmt.Errorf("repo - get price bet - %w", err)
 	}
 	return price, tx.Commit(ctx)
 }
 
-func (b *Bet) GetAdvertPrice(ctx context.Context, userId, advertId int) (int, error) {
+func (b *Bet) GetAdvertPrice(ctx context.Context, advertId int) (int, error) {
 	tx, err := b.DB.Begin(ctx)
 	if err != nil {
 		return 0, fmt.Errorf("repo - get price advert - %w", err)
 	}
 	defer tx.Rollback(ctx)
 	var price int
-	query := fmt.Sprintf("SELECT price FROM %s WHERE user_id = $1 and id = $2", advertTable)
-	row := tx.QueryRow(ctx, query, userId, advertId)
+	query := fmt.Sprintf("SELECT price FROM %s WHERE id = $1", advertTable)
+	row := tx.QueryRow(ctx, query, advertId)
 	if err := row.Scan(&price); err != nil {
 		return 0, fmt.Errorf("repo - get price advert - %w", err)
 	}
 	return price, tx.Commit(ctx)
 }
 
-func (b *Bet) IsActive(ctx context.Context, userId, advertId int) (bool, error) {
+func (b *Bet) IsActive(ctx context.Context, advertId int) (bool, error) {
 	tx, err := b.DB.Begin(ctx)
 	if err != nil {
 		return false, fmt.Errorf("repo - get status bet - %w", err)
 	}
 	defer tx.Rollback(ctx)
 	var status string
-	query := fmt.Sprintf("SELECT status FROM %s WHERE user_id = $1 and id = $2", advertTable)
-	row := tx.QueryRow(ctx, query, userId, advertId)
+	query := fmt.Sprintf("SELECT status FROM %s WHERE id = $1", advertTable)
+	row := tx.QueryRow(ctx, query, advertId)
 	if err := row.Scan(&status); err != nil {
 		return false, fmt.Errorf("repo - get status bet - %w", err)
 	}

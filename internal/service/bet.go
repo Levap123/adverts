@@ -9,6 +9,7 @@ import (
 	"github.com/Levap123/adverts/internal/mail"
 	"github.com/Levap123/adverts/internal/repository"
 	"github.com/jackc/pgx/v5"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -19,12 +20,13 @@ type Bet struct {
 }
 
 func NewBet(repo repository.BetRepo, repoAdvert repository.AdvertRepo) *Bet {
-	maiSender := mail.NewMailSender(configs.EmailConf{
+	conf := configs.EmailConf{
 		Email:    viper.GetString("email"),
 		Password: viper.GetString("password"),
 		Smtp:     viper.GetString("smtp"),
-		SmtpPort: viper.GetString("smtp_port"),
-	})
+		SmtpPort: viper.GetInt("smtp_port"),
+	}
+	maiSender := mail.NewMailSender(conf)
 	return &Bet{
 		repo:       repo,
 		repoAdvert: repoAdvert,
@@ -33,7 +35,12 @@ func NewBet(repo repository.BetRepo, repoAdvert repository.AdvertRepo) *Bet {
 }
 
 func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int, error) {
-	ok, err := b.repo.IsActive(ctx, userId, advertId)
+	email, err := b.repoAdvert.GetEmail(ctx, advertId)
+	if err != nil {
+		return 0, fmt.Errorf("service - make bet - %w", err)
+	}
+
+	ok, err := b.repo.IsActive(ctx, advertId)
 	if err != nil {
 		return 0, fmt.Errorf("service - make bet - %w", err)
 	}
@@ -42,7 +49,15 @@ func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int,
 		return 0, fmt.Errorf("service - make bet - %w", ErrAdvertIsNotActive)
 	}
 
-	priceCurrent, err := b.repo.GetPrice(ctx, userId, advertId)
+	advertPrice, err := b.repo.GetAdvertPrice(ctx, advertId)
+	if err != nil {
+		return 0, fmt.Errorf("service - make bet - %w", err)
+	}
+	if betPrice < advertPrice {
+		return 0, fmt.Errorf("service - make bet - %w", ErrPriceSmall)
+	}
+
+	priceCurrent, err := b.repo.GetPrice(ctx, advertId)
 	if err != nil {
 		if !errors.Is(err, pgx.ErrNoRows) {
 			return 0, fmt.Errorf("service - make bet - %w", err)
@@ -51,19 +66,13 @@ func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int,
 		if err != nil {
 			return 0, fmt.Errorf("service - make bet - %w", err)
 		}
+		if err := b.mailSender.Send(email, fmt.Sprintf("your advert number %d is under bet with the price %d!",
+			advertId, betPrice)); err != nil {
+			logrus.Errorf("service - make bet - mail - %v", err)
+		}
 		return betId, nil
 	}
-
 	if betPrice <= priceCurrent {
-		return 0, fmt.Errorf("service - make bet - %w", ErrPriceSmall)
-	}
-
-	advertPrice, err := b.repo.GetAdvertPrice(ctx, userId, advertId)
-	if err != nil {
-		return 0, fmt.Errorf("service - make bet - %w", err)
-	}
-
-	if betPrice < advertPrice {
 		return 0, fmt.Errorf("service - make bet - %w", ErrPriceSmall)
 	}
 
@@ -72,8 +81,10 @@ func (b *Bet) MakeBet(ctx context.Context, userId, advertId, betPrice int) (int,
 		return 0, fmt.Errorf("service - make bet - %w", err)
 	}
 
-	
-
+	if err := b.mailSender.Send(email, fmt.Sprintf("your advert number %d is under bet with the price %d!",
+		advertId, betPrice)); err != nil {
+		logrus.Errorf("service - make bet - mail - %v", err)
+	}
 	return betId, nil
 }
 

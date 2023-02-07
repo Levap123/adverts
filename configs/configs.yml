@@ -1,7 +1,7 @@
 db_username: "pavel"
 db_name: "adverts"
 db_password: "root"
-db_host: "db:5432"
+db_host: "localhost:5432"
 
 server_addr: ":8080"
 rw_timeout: 10
@@ -10,9 +10,9 @@ header_mbs: 2
 jwt_sign: "asdASD@!#awAS12354EQW"
 
 email: "test.adverts123@gmail.com"
-password: "pUzWd4rUd7k8F5e"
+password: "gmgcqswwnfrtjmau"
 smtp: "smtp.gmail.com"
-smtp_port: ":587"
+smtp_port: 587
 
 password_min: 8
 password_max: 35

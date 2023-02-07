@@ -4,5 +4,5 @@ type EmailConf struct {
 	Email    string
 	Password string
 	Smtp     string
-	SmtpPort string
+	SmtpPort int
 }

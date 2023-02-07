@@ -73,7 +73,7 @@ func (a *Advert) GetEmail(ctx context.Context, advertId int) (string, error) {
 	query := fmt.Sprintf("SELECT u.email FROM %s u JOIN %s a ON u.id = a.user_id WHERE a.id = $1", userTable, advertTable)
 	row := a.db.QueryRow(ctx, query, advertId)
 	if err := row.Scan(&email); err != nil {
-		return "", fmt.Errorf("repo - get one advert - %w", err)
+		return "", fmt.Errorf("repo - get email - %w", err)
 	}
 	return email, nil
 }

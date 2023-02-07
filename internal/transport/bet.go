@@ -39,11 +39,13 @@ func (h *Handler) MakeBet(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
-	defer cancel()
+
 	h.mu.Lock()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
 	betId, err := h.service.MakeBet(ctx, userId.(int), advertId, input.Bet)
 	h.mu.Unlock()
+	defer cancel()
+
 	if err != nil {
 		h.lg.Errorln(err)
 		switch {

@@ -40,7 +40,8 @@ func NewApp() (*App, error) {
 
 	JSON := new(json.JSONSerializer)
 
-	lg, err := lg.NewLogger()
+	logger, err := lg.NewLogger()
+
 	if err != nil {
 		return nil, fmt.Errorf("new app - logger: %w", err)
 	}
@@ -65,7 +66,7 @@ func NewApp() (*App, error) {
 
 	service := service.NewService(repos)
 
-	handler := handler.NewHandler(service, JSON, lg, validator)
+	handler := handler.NewHandler(service, JSON, logger, validator)
 
 	routes := handler.InitRoutes()
 

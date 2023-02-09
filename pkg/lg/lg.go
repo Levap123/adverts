@@ -1,9 +1,11 @@
 package lg
 
 import (
+	"io"
 	"os"
 
 	"github.com/sirupsen/logrus"
+	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
 func init() {
@@ -11,11 +13,20 @@ func init() {
 }
 
 func NewLogger() (*logrus.Logger, error) {
-	out, err := os.OpenFile("logs.log", os.O_WRONLY|os.O_CREATE, 0777)
+	f, err := os.OpenFile("logs.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		return nil, err
 	}
-	return &logrus.Logger{
-		Out: out,
-	}, nil
+	logger := &logrus.Logger{
+		Out:   io.MultiWriter(os.Stdout, f),
+		Level: logrus.DebugLevel,
+		Formatter: &prefixed.TextFormatter{
+			DisableColors:   true,
+			TimestampFormat: "2006-01-02 15:04:05",
+			FullTimestamp:   true,
+			ForceFormatting: true,
+		},
+	}
+	logger.Info("231123")
+	return logger, nil
 }
